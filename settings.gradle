@@ -1,0 +1,21 @@
+rootProject.name = 'gradle-cache-demo'
+
+ext {
+  isCiServer = System.getenv().containsKey("CI")
+}
+
+buildCache {
+  local(DirectoryBuildCache) {
+    logger.lifecycle("root: ${rootDir}")
+    directory = new File(rootDir, 'build-cache')
+    targetSizeInMB = 1024
+    push = true
+    enabled = false
+//    enabled = !isCiServer
+  }
+  remote(HttpBuildCache) {
+    url = 'http://localhost:8080/cache/'
+    push = true
+//    push = isCiServer
+  }
+}
